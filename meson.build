@@ -2,7 +2,7 @@ project('rpicam-apps', 'c', 'cpp',
         meson_version : '>= 0.64.0',
         version : '1.5.0',
         default_options : [
-            'werror=true',
+            'werror=false',
             'warning_level=3',
             'cpp_std=c++17',
             'c_std=c11',
