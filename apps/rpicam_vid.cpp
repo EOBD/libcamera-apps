@@ -69,7 +69,7 @@ static void event_loop(RPiCamEncoder &app)
 	std::string param;
 	std::string num;
 	signal_server.start();
-	libcamera::ControlList cl2;
+	libcamera::ControlList cl;
 
 	// float scale = 0.0;
 	// float offset_x = 0.0;
@@ -165,80 +165,80 @@ static void event_loop(RPiCamEncoder &app)
 
 
 		// switch (key)
-		{
-			case 'w':
-			case 'W':
-			{
-				scale += 0.05;
-				break;
-			}
-			case 'f':
-			case 'F': 
-			{
-				libcamera::ControlList cl;
-				cl.set(controls::AfMode, controls::AfModeAuto);
-				cl.set(controls::AfTrigger, controls::AfTriggerStart);
-				app.SetControls(cl);
-				std::cout << "AfTrigger" << std::endl;
-				break;
-			}
-			case 'd':
-			case 'D':
-			{
-				lens_position -= af_step;
-				break;
-			}
-			case 'a':
-			case 'A':
-			{
-				lens_position += af_step;
-				break;
-			}
-			case 's':
-			case 'S':
-			{
-				scale -= 0.05;
-				break;
-			}
-			case 'l':
-			case 'L':
-			{
-				offset_x += 0.05;
-				break;
-			}
-			case 'j':
-			case 'J':
-			{
-				offset_x -= 0.05;
-				break;
-			}
-			case 'i':
-			case 'I':
-			{
-				offset_y -= 0.05;
-				break;
-			}
-			case 'k':
-			case 'K':
-			{
-				offset_y += 0.05;
-				break;
-			}
-			case 'm':
-			case 'M':
-			{
-				scale = 0.95;
-				break;
-			}
-			case 'r':
-			case 'R':
-			{
-				scale = 0.0;
-				break;
-			}
-			default:
-				(void)0;
-		}
+		// {
+		// 	case 'w':
+		// 	case 'W':
+		// 	{
+		// 		scale += 0.05;
+		// 		break;
+		// 	}
+		// 	case 'f':
+		// 	case 'F': 
+		// 	{
+		// 		libcamera::ControlList cl;
+		// 		cl.set(controls::AfMode, controls::AfModeAuto);
+		// 		cl.set(controls::AfTrigger, controls::AfTriggerStart);
+		// 		app.SetControls(cl);
+		// 		std::cout << "AfTrigger" << std::endl;
+		// 		break;
+		// 	}
+		// 	case 'd':
+		// 	case 'D':
+		// 	{
+		// 		lens_position -= af_step;
+		// 		break;
+		// 	}
+		// 	case 'a':
+		// 	case 'A':
+		// 	{
+		// 		lens_position += af_step;
+		// 		break;
+		// 	}
+		// 	case 's':
+		// 	case 'S':
+		// 	{
+		// 		scale -= 0.05;
+		// 		break;
+		// 	}
+		// 	case 'l':
+		// 	case 'L':
+		// 	{
+		// 		offset_x += 0.05;
+		// 		break;
+		// 	}
+		// 	case 'j':
+		// 	case 'J':
+		// 	{
+		// 		offset_x -= 0.05;
+		// 		break;
+		// 	}
+		// 	case 'i':
+		// 	case 'I':
+		// 	{
+		// 		offset_y -= 0.05;
+		// 		break;
+		// 	}
+		// 	case 'k':
+		// 	case 'K':
+		// 	{
+		// 		offset_y += 0.05;
+		// 		break;
+		// 	}
+		// 	case 'm':
+		// 	case 'M':
+		// 	{
+		// 		scale = 0.95;
+		// 		break;
+		// 	}
+		// 	case 'r':
+		// 	case 'R':
+		// 	{
+		// 		scale = 0.0;
+		// 		break;
+		// 	}
+		// 	default:
+		// 		(void)0;
+		// }
 		// if (scale > 0.95)
 		// 	scale = 0.95;
 		// else if (scale < 0.0)
