@@ -119,50 +119,18 @@ static void event_loop(RPiCamEncoder &app)
 		// if (!key)
 		// key = param[0];
 		printf(param);
-		switch (param)
+		if (param == "1" || param == "2" || param == "3" || param == "4" || param == "5" || param == "6" || param == "7" || param == "8" || param == "9" || param == "0")
 		{
-			case '1':
-				num += "1";
-				break;
-			case '2':
-				num += "2";
-				break;
-			case '3':
-				num += "3";
-				break;
-			case '4':	
-				num += "4";
-				break;
-			case '5':
-				num += "5";
-				break;
-			case '6':
-				num += "6";
-				break;
-			case '7':	
-				num += "7";
-				break;	
-			case '8':
-				num += "8";
-				break;	
-			case '9':
-				num += "9";
-				break;
-			case '0':
-				num += "0";
-				break;
-			case '-':
-				
-				cl.set(controls::ExposureTime,std::stoll(num));
-				app.SetControls(cl);
-				app.StopCamera();
-				app.StartCamera();
-				num = "";
-				break;
+			num += param;
 
-			default:
-				break;
+		}else if (param == "-"){
+			cl.set(controls::ExposureTime, std::stoll(num));
+			app.SetControls(cl);
+			app.StopCamera();
+			app.StartCamera();
+			num = "";
 		}
+		
 
 
 		// switch (key)
