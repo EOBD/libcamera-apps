@@ -118,7 +118,7 @@ static void event_loop(RPiCamEncoder &app)
 			output->Signal();
 		if (!key)
 			key = param[0];
-		
+		printf(key)
 		switch (key)
 		{
 			case '1':
@@ -152,6 +152,7 @@ static void event_loop(RPiCamEncoder &app)
 				num += "0";
 				break;
 			case '-':
+				
 				cl.set(controls::ExposureTime,std::stoll(num));
 				app.SetControls(cl);
 				app.StopCamera();
