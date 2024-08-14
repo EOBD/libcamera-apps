@@ -118,7 +118,7 @@ static void event_loop(RPiCamEncoder &app)
 			output->Signal();
 		if (!key)
 			key = param[0];
-		printf(key)
+		printf(key);
 		switch (key)
 		{
 			case '1':
