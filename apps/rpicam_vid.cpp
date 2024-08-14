@@ -67,13 +67,15 @@ static void event_loop(RPiCamEncoder &app)
 {
 	SignalServer signal_server(8080);
 	std::string param;
+	std::string num;
 	signal_server.start();
+	libcamera::ControlList cl2
 
-	float scale = 0.0;
-	float offset_x = 0.0;
-	float offset_y = 0.0;
-	float lens_position = 0;
-	float af_step = 1;
+	// float scale = 0.0;
+	// float offset_x = 0.0;
+	// float offset_y = 0.0;
+	// float lens_position = 0;
+	// float af_step = 1;
 
 	VideoOptions const *options = app.GetOptions();
 	std::unique_ptr<Output> output = std::unique_ptr<Output>(Output::Create(options));
@@ -116,7 +118,53 @@ static void event_loop(RPiCamEncoder &app)
 			output->Signal();
 		if (!key)
 			key = param[0];
+		
 		switch (key)
+		{
+			case '1':
+				num += "1";
+				break;
+			case '2':
+				num += "2";
+				break;
+			case '3':
+				num += "3";
+				break;
+			case '4':	
+				num += "4";
+				break;
+			case '5':
+				num += "5";
+				break;
+			case '6':
+				num += "6";
+				break;
+			case '7':	
+				num += "7";
+				break;	
+			case '8':
+				num += "8";
+				break;	
+			case '9':
+				num += "9";
+				break;
+			case '0':
+				num += "0";
+				break;
+			case '-':
+				cl.set(controls::ExposureTime,std::stoll(num));
+				app.SetControls(cl);
+				app.StopCamera();
+				app.StartCamera();
+				num = "";
+				break;
+
+			default:
+				break;
+		}
+
+
+		// switch (key)
 		{
 			case 'w':
 			case 'W':
@@ -191,46 +239,46 @@ static void event_loop(RPiCamEncoder &app)
 			default:
 				(void)0;
 		}
-		if (scale > 0.95)
-			scale = 0.95;
-		else if (scale < 0.0)
-			scale = 0.0;
+		// if (scale > 0.95)
+		// 	scale = 0.95;
+		// else if (scale < 0.0)
+		// 	scale = 0.0;
 
-		if (offset_x > scale / 2)
-			offset_x = scale / 2;
-		else if (offset_x < -(scale / 2))
-			offset_x = -(scale / 2);
+		// if (offset_x > scale / 2)
+		// 	offset_x = scale / 2;
+		// else if (offset_x < -(scale / 2))
+		// 	offset_x = -(scale / 2);
 
-		if (offset_y > scale / 2)
-			offset_y = scale / 2;
-		else if (offset_y < -(scale / 2))
-			offset_y = -(scale / 2);
+		// if (offset_y > scale / 2)
+		// 	offset_y = scale / 2;
+		// else if (offset_y < -(scale / 2))
+		// 	offset_y = -(scale / 2);
 
-		if (isalpha(key))
-		{
-			std::cout << "scale: " << scale << ", offset_x: " << offset_x << std::endl;
+		// if (isalpha(key))
+		// {
+		// 	std::cout << "scale: " << scale << ", offset_x: " << offset_x << std::endl;
 
-			app.SetScalerCrop(scale / 2 + offset_x, scale / 2 + offset_y, 1 - scale, 1 - scale);
-		}
+		// 	app.SetScalerCrop(scale / 2 + offset_x, scale / 2 + offset_y, 1 - scale, 1 - scale);
+		// }
 
-		if (key == 'a' || key == 'A' || key == 'd' || key == 'D') {
-			if (options->afMode_index == controls::AfModeManual) {
-				libcamera::ControlList controls;
-				controls.set(controls::AfMode, controls::AfModeManual);
-				controls.set(controls::LensPosition, lens_position);
-				app.SetControls(controls);
-				std::cout << "target_lens_position: " << lens_position << std::endl;
-			} else {
-				std::cout << "Please switch the focus mode to manual focus mode." << std::endl;
-			}
-		}
+		// if (key == 'a' || key == 'A' || key == 'd' || key == 'D') {
+		// 	if (options->afMode_index == controls::AfModeManual) {
+		// 		libcamera::ControlList controls;
+		// 		controls.set(controls::AfMode, controls::AfModeManual);
+		// 		controls.set(controls::LensPosition, lens_position);
+		// 		app.SetControls(controls);
+		// 		std::cout << "target_lens_position: " << lens_position << std::endl;
+		// 	} else {
+		// 		std::cout << "Please switch the focus mode to manual focus mode." << std::endl;
+		// 	}
+		// }
 
 		LOG(2, "Viewfinder frame " << count);
 		auto now = std::chrono::high_resolution_clock::now();
 		bool timeout = !options->frames && options->timeout &&
 					   ((now - start_time) > options->timeout.value);
 		bool frameout = options->frames && count >= options->frames;
-		if (timeout || frameout || key == 'x' || key == 'X')
+		if (timeout || frameout )//|| key == 'x' || key == 'X')
 		{
 			if (timeout)
 				LOG(1, "Halting: reached timeout of " << options->timeout.get<std::chrono::milliseconds>()
