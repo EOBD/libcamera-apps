@@ -69,7 +69,7 @@ static void event_loop(RPiCamEncoder &app)
 	std::string param;
 	std::string num;
 	signal_server.start();
-	libcamera::ControlList cl2
+	libcamera::ControlList cl2;
 
 	// float scale = 0.0;
 	// float offset_x = 0.0;
