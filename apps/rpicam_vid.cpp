@@ -113,13 +113,13 @@ static void event_loop(RPiCamEncoder &app)
 			return;
 		else if (msg.type != RPiCamEncoder::MsgType::RequestComplete)
 			throw std::runtime_error("unrecognised message!");
-		int key = get_key_or_signal(options, p);
-		if (key == '\n')
-			output->Signal();
-		if (!key)
-			key = param[0];
-		printf(key);
-		switch (key)
+		// int key = get_key_or_signal(options, p);
+		// if (key == '\n')
+			// output->Signal();
+		// if (!key)
+		// key = param[0];
+		printf(param);
+		switch (param)
 		{
 			case '1':
 				num += "1";
