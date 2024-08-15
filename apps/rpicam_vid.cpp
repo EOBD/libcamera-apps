@@ -276,11 +276,10 @@ static void event_loop(RPiCamEncoder &app)
 		// }
 		if (check_input_received()) {
 				std::string input = get_input();
-				cl.set(controls::ExposureTime, std::stoll(input));
-				app.SetControls(cl);
-				app.StopCamera();
-				app.StartCamera();
-			}
+				libcamera::ControlList controls;
+				controls.set(controls::ExposureTime, std::stoll(input));
+				app.SetControls(controls);
+		}
 
 
 			
