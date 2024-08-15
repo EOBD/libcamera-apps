@@ -65,6 +65,10 @@ static int get_colourspace_flags(std::string const &codec)
 	else
 		return RPiCamEncoder::FLAG_VIDEO_NONE;
 }
+std::atomic<bool> input_received(false);
+std::atomic<bool> stop_requested(false);
+std::string user_input;
+std::mutex mtx;
 
 void input_task() {
 	while (!stop_requested.load()) {
@@ -91,18 +95,15 @@ void stop_threads() {
 	stop_requested.store(true);
 }
 
-std::atomic<bool> input_received(false);
-	std::atomic<bool> stop_requested(false);
-	std::string user_input;
-	std::mutex mtx;
-	
+
+
 static void event_loop(RPiCamEncoder &app)
 {
 	// SignalServer signal_server(8080);
 	// std::string param;
 	// std::string num;
 	// signal_server.start();
-	// libcamera::ControlList cl;
+	libcamera::ControlList cl;
 
 	// float scale = 0.0;
 	// float offset_x = 0.0;
