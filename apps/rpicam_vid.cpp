@@ -118,7 +118,7 @@ static void event_loop(RPiCamEncoder &app)
 			// output->Signal();
 		// if (!key)
 		// key = param[0];
-		printf(param);
+		std::printf(param);
 		if (param == "1" || param == "2" || param == "3" || param == "4" || param == "5" || param == "6" || param == "7" || param == "8" || param == "9" || param == "0")
 		{
 			num += param;
