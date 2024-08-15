@@ -10,7 +10,12 @@
 #include <signal.h>
 #include <sys/signalfd.h>
 #include <sys/stat.h>
-
+#include <iostream>
+#include <thread>
+#include <atomic>
+#include <string>
+#include <mutex>
+#include <chrono>
 #include "core/rpicam_encoder.hpp"
 #include "output/output.hpp"
 #include "../SignalServer/SignalServer.hpp"
@@ -61,14 +66,37 @@ static int get_colourspace_flags(std::string const &codec)
 		return RPiCamEncoder::FLAG_VIDEO_NONE;
 }
 
-// The main even loop for the application.
+void input_task() {
+	while (!stop_requested.load()) {
+		std::string temp_input;
+		if (std::getline(std::cin, temp_input)) {
+			std::lock_guard<std::mutex> lock(mtx);
+			user_input = temp_input;
+			input_received = true;
+		}
+	}
+}
+
+bool check_input_received() {
+	return input_received.load();
+}
+
+std::string get_input() {
+	std::lock_guard<std::mutex> lock(mtx);
+	input_received = false;
+	return user_input;
+}
+
+void stop_threads() {
+	stop_requested.store(true);
+}
 
 static void event_loop(RPiCamEncoder &app)
 {
-	SignalServer signal_server(8080);
-	std::string param;
-	std::string num;
-	signal_server.start();
+	// SignalServer signal_server(8080);
+	// std::string param;
+	// std::string num;
+	// signal_server.start();
 	libcamera::ControlList cl;
 
 	// float scale = 0.0;
@@ -88,10 +116,21 @@ static void event_loop(RPiCamEncoder &app)
 	app.StartCamera();
 	auto start_time = std::chrono::high_resolution_clock::now();
 
-	// Monitoring for keypresses and signals.
-	signal(SIGUSR1, default_signal_handler);
-	signal(SIGUSR2, default_signal_handler);
-	signal(SIGINT, default_signal_handler);
+
+
+	std::atomic<bool> input_received(false);
+	std::atomic<bool> stop_requested(false);
+	std::string user_input;
+	std::mutex mtx;
+
+	
+
+	std::thread input_thread(input_task);
+
+	// signal(SIGUSR1, default_signal_handler);
+	// signal(SIGUSR2, default_signal_handler);
+	// signal(SIGINT, default_signal_handler);
+
 	// SIGPIPE gets raised when trying to write to an already closed socket. This can happen, when
 	// you're using TCP to stream to VLC and the user presses the stop button in VLC. Catching the
 	// signal to be able to react on it, otherwise the app terminates.
@@ -100,7 +139,7 @@ static void event_loop(RPiCamEncoder &app)
 
 	for (unsigned int count = 0; ; count++)
 	{
-		param = signal_server.read();
+		// param = signal_server.read();
 		RPiCamEncoder::Msg msg = app.Wait();
 		if (msg.type == RPiCamApp::MsgType::Timeout)
 		{
@@ -118,18 +157,9 @@ static void event_loop(RPiCamEncoder &app)
 			// output->Signal();
 		// if (!key)
 		// key = param[0];
-		std::cout << param << std::endl;
-		if (param == "1" || param == "2" || param == "3" || param == "4" || param == "5" || param == "6" || param == "7" || param == "8" || param == "9" || param == "0")
-		{
-			num += param;
-
-		}else if (param == "-"){
-			cl.set(controls::ExposureTime, std::stoll(num));
-			app.SetControls(cl);
-			app.StopCamera();
-			app.StartCamera();
-			num = "";
-		}
+		// std::cout << param << std::endl;
+			
+		
 		
 
 
@@ -241,6 +271,16 @@ static void event_loop(RPiCamEncoder &app)
 		// 		std::cout << "Please switch the focus mode to manual focus mode." << std::endl;
 		// 	}
 		// }
+		if (check_input_received()) {
+				std::string input = get_input();
+				cl.set(controls::ExposureTime, std::stoll(input));
+				app.SetControls(cl);
+				app.StopCamera();
+				app.StartCamera();
+			}
+
+
+			
 
 		LOG(2, "Viewfinder frame " << count);
 		auto now = std::chrono::high_resolution_clock::now();
@@ -254,6 +294,7 @@ static void event_loop(RPiCamEncoder &app)
 													  << " milliseconds.");
 			app.StopCamera(); // stop complains if encoder very slow to close
 			app.StopEncoder();
+			input_thread.join(); 
 			return;
 		}
 
