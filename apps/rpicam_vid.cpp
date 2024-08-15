@@ -278,6 +278,7 @@ static void event_loop(RPiCamEncoder &app)
 				std::string input = get_input();
 				libcamera::ControlList controls;
 				controls.set(controls::ExposureTime, std::stoll(input));
+				controls.set(controls::AnalogueGain, 0);
 				app.SetControls(controls);
 		}
 
