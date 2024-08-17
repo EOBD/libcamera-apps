@@ -116,6 +116,10 @@ static void event_loop(RPiCamEncoder &app)
 	app.SetEncodeOutputReadyCallback(std::bind(&Output::OutputReady, output.get(), _1, _2, _3, _4));
 	app.SetMetadataReadyCallback(std::bind(&Output::MetadataReady, output.get(), _1));
 
+	libcamera::ControlList controls;
+	controls.set(controls::AnalogueGain, 1);
+	app.SetControls(controls);
+
 	app.OpenCamera();
 	app.ConfigureVideo(get_colourspace_flags(options->codec));
 	app.StartEncoder();
@@ -276,7 +280,6 @@ static void event_loop(RPiCamEncoder &app)
 		// }
 		if (check_input_received()) {
 				std::string input = get_input();
-				libcamera::ControlList controls;
 				controls.set(controls::ExposureTime, std::stoll(input));
 				controls.set(controls::AnalogueGain, 1);
 				app.SetControls(controls);
