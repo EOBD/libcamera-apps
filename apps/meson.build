@@ -18,7 +18,7 @@ rpicam_hello = executable('rpicam-hello', files(['rpicam_hello.cpp', '../SignalS
                           link_with : rpicam_app,
                           install : true)
 
-faucet_cam = executable('rpicam-hello', files(['faucet_cam.cpp', '../SignalServer/Semaphore.hpp', '../SignalServer/SignalServer.cpp']),
+faucet_cam = executable('faucet-cam', files(['faucet_cam.cpp', '../SignalServer/Semaphore.hpp', '../SignalServer/SignalServer.cpp']),
                           include_directories : include_directories('..'),
                           dependencies: [libcamera_dep, boost_dep, pthread_dep],
                           link_with : rpicam_app,
